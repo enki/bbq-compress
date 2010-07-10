@@ -1,5 +1,4 @@
-from django.core.exceptions import ImproperlyConfigured
-from django.conf import settings
+from bbq.conf import settings
 
 COMPRESS = getattr(settings, 'COMPRESS', not settings.DEBUG)
 COMPRESS_AUTO = getattr(settings, 'COMPRESS_AUTO', True)

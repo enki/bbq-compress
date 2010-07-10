@@ -1,4 +1,4 @@
-from django.conf import settings
+from bbq.conf import settings
 
 from compress.filter_base import FilterBase
 from compress.filters.csstidy_python.csstidy import CSSTidy

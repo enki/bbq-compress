@@ -2,12 +2,20 @@ import os
 import re
 import tempfile
 
-from django.conf import settings as django_settings
-from django.utils.http import urlquote
-from django.dispatch import dispatcher
+from bbq.conf import settings as bbq_settings
+
+def urlquote(url, safe='/'):
+    """
+    A version of Python's urllib.quote() function that can operate on unicode
+    strings. The url is first UTF-8 encoded before quoting. The returned string
+    can safely be used as part of an argument to a subsequent iri_to_uri() call
+    without double-quoting occurring.
+    """
+    return unicode(urllib.quote(unicode(url), safe))
+
+# from django.dispatch import dispatcher
 
 from compress.conf import settings
-from compress.signals import css_filtered, js_filtered
 
 def get_class(class_string):
     """
@@ -58,12 +66,12 @@ def media_root(filename):
     """
     Return the full path to ``filename``. ``filename`` is a relative path name in MEDIA_ROOT
     """
-    return os.path.join(django_settings.MEDIA_ROOT, filename)
+    return os.path.join(bbq_settings.MEDIA_ROOT, filename)
 
 def media_url(url, prefix=None):
     if prefix:
         return prefix + urlquote(url)
-    return django_settings.MEDIA_URL + urlquote(url)
+    return bbq_settings.MEDIA_URL + urlquote(url)
 
 def concat(filenames, separator=''):
     """
@@ -115,7 +123,7 @@ def remove_files(path, filename, verbosity=0):
         
                 os.unlink(os.path.join(path, f))
 
-def filter_common(obj, verbosity, filters, attr, separator, signal):
+def filter_common(obj, verbosity, filters, attr, separator):
     output = concat(obj['source_filenames'], separator)
     
     filename = get_output_filename(obj['output_filename'], get_version(obj['source_filenames']))
@@ -130,10 +138,9 @@ def filter_common(obj, verbosity, filters, attr, separator, signal):
         output = getattr(get_class(f)(verbose=(verbosity >= 2)), attr)(output)
 
     save_file(filename, output)
-    signal.send(None)
 
 def filter_css(css, verbosity=0):
-    return filter_common(css, verbosity, filters=settings.COMPRESS_CSS_FILTERS, attr='filter_css', separator='', signal=css_filtered)
+    return filter_common(css, verbosity, filters=settings.COMPRESS_CSS_FILTERS, attr='filter_css', separator='')
 
 def filter_js(js, verbosity=0):
-    return filter_common(js, verbosity, filters=settings.COMPRESS_JS_FILTERS, attr='filter_js', separator='', signal=js_filtered)
+    return filter_common(js, verbosity, filters=settings.COMPRESS_JS_FILTERS, attr='filter_js', separator='')

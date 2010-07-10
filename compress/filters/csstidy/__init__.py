@@ -2,7 +2,7 @@ import os
 import warnings
 import tempfile
 
-from django.conf import settings
+from bbq.conf import settings
 
 from compress.filter_base import FilterBase
 

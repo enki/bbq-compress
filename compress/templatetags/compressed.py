@@ -2,7 +2,7 @@ import os
 
 from django import template
 
-from django.conf import settings as django_settings
+from bbq.conf import settings as django_settings
 
 from compress.conf import settings
 from compress.utils import media_root, media_url, needs_update, filter_css, filter_js, get_output_filename, get_version, get_version_from_file
