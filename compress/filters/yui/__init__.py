@@ -13,9 +13,11 @@ class YUICompressorFilter(FilterBase):
     def filter_common(self, content, type_, arguments):
         command = '%s --type=%s %s' % (BINARY, type_, arguments)
 
+	self.verbose = True
         if self.verbose:
             command += ' --verbose'
 
+	print 'command:', command
         p = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.PIPE)
         p.stdin.write(content)
         p.stdin.close()
